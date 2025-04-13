@@ -371,6 +371,17 @@ namespace OBSPlugin
             }
             try
             {
+                UpdateCharacterInspect();
+            }
+            catch (Exception e)
+            {
+                Plugin.PluginLog.Error("Error Updating CharacterInspect UI: {0}", e);
+                Config.CharacterInspectBlur = false;
+                UIErrorCount++;
+                Config.Save();
+            }
+            try
+            {
                 UpdateFridendList();
             }
             catch (Exception e)
@@ -782,6 +793,17 @@ namespace OBSPlugin
             UpdateBlur(GetBlurFromNode(childNodeProfile, "CharacterProfile"));
         }
 
+        private unsafe void UpdateCharacterInspect()
+        {
+            if (!Config.CharacterInspectBlur) return;
+            var CharaInspectAddress = Plugin.GameGui.GetAddonByName("CharaInspect", 1);
+            if (CharaInspectAddress == IntPtr.Zero) return;
+            var CharaInspect = (AtkUnitBase*)CharaInspectAddress;
+            if (CharaInspect->UldManager.NodeListCount <= 0) return;
+            var childNode = CharaInspect->UldManager.NodeList[0]; // whole ui
+            UpdateBlur(GetBlurFromNode(childNode, "CharaInspect"));
+        }
+
         private unsafe void UpdateFridendList()
         {
             if (!Config.FriendListBlur) return;
@@ -1026,6 +1048,21 @@ namespace OBSPlugin
                         characterBlur.Enabled = false;
                         Plugin.PluginLog.Debug("Turn off {0}", characterBlur.Name);
                         BlurItemsToAdd.Add((Blur)characterBlur.Clone());
+                    }
+                }
+                Config.Save();
+
+            }
+            if (ImGui.Checkbox("CharacterInspect", ref Config.CharacterInspectBlur))
+            {
+                if (!Config.CharacterInspectBlur)
+                {
+                    Blur CharacterInspectBlur = null;
+                    if (BlurDict.TryGetValue("Character", out CharacterInspectBlur))
+                    {
+                        CharacterInspectBlur.Enabled = false;
+                        Plugin.PluginLog.Debug("Turn off {0}", CharacterInspectBlur.Name);
+                        BlurItemsToAdd.Add((Blur)CharacterInspectBlur.Clone());
                     }
                 }
                 Config.Save();

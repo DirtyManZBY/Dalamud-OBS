@@ -25,6 +25,7 @@ namespace OBSPlugin
         public bool FocusTargetBlur = false;
         public bool NamePlateBlur = false;
         public bool CharacterBlur = false;
+        public bool CharacterInspectBlur = false;
         public bool FriendListBlur = false;
         public bool HotbarBlur = false;
         public bool CastBarBlur = false;
