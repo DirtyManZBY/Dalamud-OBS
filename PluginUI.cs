@@ -691,7 +691,7 @@ namespace OBSPlugin
                         {
                             targetBlur = GetBlurFromNode(childNode, "Target");
                         }
-                        else if (textIndex == totalText - 1)
+                        else if (textIndex == 3)
                         {
                             targetTargetBlur = GetBlurFromNode(childNode, "TargetTarget");
                         }
